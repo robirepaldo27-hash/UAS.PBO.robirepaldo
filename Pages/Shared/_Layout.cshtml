@@ -1,0 +1,380 @@
+﻿<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Kasir Sembako</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Fraunces:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <style>
+        :root {
+            --primary: #1a6b3c;
+            --primary-light: #2d9b5a;
+            --primary-dark: #0f3d22;
+            --accent: #f5a623;
+            --bg: #f4f6f3;
+            --surface: #ffffff;
+            --text: #1a1f1a;
+            --text-muted: #6b7a6b;
+            --border: #e0e8e0;
+            --danger: #e05252;
+            --warning: #f5a623;
+            --info: #3a8fc7;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        /* NAVBAR */
+        .navbar {
+            background: var(--primary-dark) !important;
+            padding: 0 2rem;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+            border-bottom: 3px solid var(--accent);
+        }
+
+        .navbar-brand {
+            font-family: 'Fraunces', serif;
+            font-size: 1.4rem;
+            color: #fff !important;
+            letter-spacing: -0.5px;
+        }
+
+        .navbar-brand span {
+            color: var(--accent);
+        }
+
+        .nav-link {
+            color: rgba(255,255,255,0.8) !important;
+            font-weight: 500;
+            font-size: 0.9rem;
+            padding: 1.2rem 1rem !important;
+            transition: all 0.2s;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -3px;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: #fff !important;
+            border-bottom: 3px solid var(--accent);
+        }
+
+        /* MAIN CONTENT */
+        .main-content {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* PAGE HEADER */
+        .page-header {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .page-header h2 {
+            font-family: 'Fraunces', serif;
+            font-size: 1.8rem;
+            color: var(--primary-dark);
+            margin: 0;
+        }
+
+        /* CARDS */
+        .card {
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        /* STAT CARDS */
+        .stat-card {
+            background: var(--surface);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--primary);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .stat-card.accent { border-left-color: var(--accent); }
+        .stat-card.info { border-left-color: var(--info); }
+
+        .stat-card h6 {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card h4 {
+            color: var(--text);
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin: 0;
+        }
+
+        /* TABLES */
+        .table-wrapper {
+            background: var(--surface);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .table {
+            margin: 0;
+        }
+
+        .table thead th {
+            background: var(--primary-dark);
+            color: #fff;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            padding: 1rem 1.2rem;
+            border: none;
+            font-weight: 600;
+        }
+
+        .table tbody td {
+            padding: 0.9rem 1.2rem;
+            border-bottom: 1px solid var(--border);
+            vertical-align: middle;
+            font-size: 0.92rem;
+        }
+
+        .table tbody tr:last-child td { border-bottom: none; }
+
+        .table tbody tr:hover { background: #f8faf8; }
+
+        .table tfoot td {
+            background: #f0f5f0;
+            padding: 0.9rem 1.2rem;
+            font-weight: 600;
+            border-top: 2px solid var(--border);
+        }
+
+        /* BUTTONS */
+        .btn {
+            font-weight: 600;
+            font-size: 0.85rem;
+            border-radius: 8px;
+            padding: 0.5rem 1.1rem;
+            transition: all 0.2s;
+            border: none;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: #fff;
+        }
+        .btn-primary:hover { background: var(--primary-light); }
+
+        .btn-success {
+            background: #2d9b5a;
+            color: #fff;
+        }
+        .btn-success:hover { background: #248a4e; }
+
+        .btn-warning {
+            background: var(--accent);
+            color: #fff;
+        }
+        .btn-warning:hover { background: #e09510; }
+
+        .btn-danger {
+            background: var(--danger);
+            color: #fff;
+        }
+        .btn-danger:hover { background: #c94444; }
+
+        .btn-secondary {
+            background: #e0e8e0;
+            color: var(--text);
+        }
+        .btn-secondary:hover { background: #cdd8cd; }
+
+        .btn-info {
+            background: var(--info);
+            color: #fff;
+        }
+        .btn-info:hover { background: #2e7ab0; }
+
+        .btn-sm {
+            padding: 0.3rem 0.7rem;
+            font-size: 0.78rem;
+        }
+
+        /* FORMS */
+        .form-wrapper {
+            background: var(--surface);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .form-control, .form-select {
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            padding: 0.6rem 0.9rem;
+            font-size: 0.92rem;
+            transition: border-color 0.2s;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(26,107,60,0.12);
+        }
+
+        label {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 0.4rem;
+        }
+
+        /* ALERT */
+        .alert-danger {
+            background: #fdf0f0;
+            border: 1px solid #f5c6c6;
+            border-radius: 10px;
+            color: var(--danger);
+        }
+
+        /* FOOTER */
+        footer {
+            text-align: center;
+            padding: 1.5rem;
+            color: var(--text-muted);
+            font-size: 0.82rem;
+            border-top: 1px solid var(--border);
+            margin-top: 3rem;
+        }
+
+        /* BADGE */
+        .badge-stok {
+            background: #e8f5ee;
+            color: var(--primary);
+            padding: 0.3rem 0.7rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        /* RINGKASAN KASIR */
+        .ringkasan-card {
+            background: var(--primary-dark);
+            border-radius: 12px;
+            padding: 1.5rem;
+            color: #fff;
+            position: sticky;
+            top: 1rem;
+        }
+
+        .ringkasan-card h5 {
+            font-family: 'Fraunces', serif;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: var(--accent);
+        }
+
+        .ringkasan-card .total-amount {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .ringkasan-card label { color: rgba(255,255,255,0.7); }
+
+        .ringkasan-card .form-control {
+            background: rgba(255,255,255,0.1);
+            border-color: rgba(255,255,255,0.2);
+            color: #fff;
+        }
+
+        .ringkasan-card .form-control:focus {
+            background: rgba(255,255,255,0.15);
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(245,166,35,0.2);
+            color: #fff;
+        }
+
+        .ringkasan-card .form-control::placeholder { color: rgba(255,255,255,0.4); }
+
+        .kembalian-box {
+            background: rgba(255,255,255,0.1);
+            border-radius: 8px;
+            padding: 0.8rem 1rem;
+            margin-top: 0.5rem;
+        }
+
+        .btn-kasir {
+            background: var(--accent);
+            color: #fff;
+            width: 100%;
+            padding: 0.8rem;
+            font-size: 1rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+            font-weight: 700;
+        }
+
+        .btn-kasir:hover { background: #e09510; color: #fff; }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid">
+            <a class="navbar-brand d-flex align-items-center gap-2" href="/">
+    <img src="~/images/logo.svg" width="36" height="36" alt="Logo" />
+    Kasir<span>Sembako</span>
+</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navMenu">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" asp-page="/Index">🏠 Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-page="/Produk/Index">📦 Data Produk</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-page="/Transaksi/Index">🛒 Transaksi</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-page="/Laporan/Index">📊 Laporan</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="main-content">
+        @RenderBody()
+    </div>
+
+    <footer>
+        © @DateTime.Now.Year — KasirSembako. Dibuat dengan ASP.NET Core.
+    </footer>
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

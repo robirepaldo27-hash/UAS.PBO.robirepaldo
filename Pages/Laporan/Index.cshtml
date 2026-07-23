@@ -1,0 +1,78 @@
+@page
+@model KasirSembako.Pages.Laporan.IndexModel
+@{
+    ViewData["Title"] = "Laporan Transaksi";
+}
+
+<div class="page-header">
+    <h2>📊 Laporan Transaksi</h2>
+</div>
+
+<div class="form-wrapper mb-4">
+    <form method="get" class="row g-3 align-items-end">
+        <div class="col-md-3">
+            <label>Dari Tanggal</label>
+            <input type="date" name="dari" value="@Model.Dari.ToString("yyyy-MM-dd")" class="form-control" />
+        </div>
+        <div class="col-md-3">
+            <label>Sampai Tanggal</label>
+            <input type="date" name="sampai" value="@Model.Sampai.ToString("yyyy-MM-dd")" class="form-control" />
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-primary w-100">🔍 Filter</button>
+        </div>
+        <div class="col-md-2">
+            <a href="/Laporan/Print?dari=@Model.Dari.ToString("yyyy-MM-dd")&sampai=@Model.Sampai.ToString("yyyy-MM-dd")"
+               class="btn btn-secondary w-100" target="_blank">🖨️ Print</a>
+        </div>
+    </form>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="stat-card accent">
+            <h6>Total Pendapatan</h6>
+            <h4>Rp @Model.TotalPendapatan.ToString("N0")</h4>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card info">
+            <h6>Jumlah Transaksi</h6>
+            <h4>@Model.Transaksis.Count Transaksi</h4>
+        </div>
+    </div>
+</div>
+
+<div class="table-wrapper">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>Tanggal</th>
+                <th>Pelanggan</th>
+                <th>Total</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < Model.Transaksis.Count; i++)
+            {
+                <tr>
+                    <td>@(i + 1)</td>
+                    <td>@Model.Transaksis[i].Tanggal.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td><strong>@Model.Transaksis[i].NamaPelanggan</strong></td>
+                    <td>Rp @Model.Transaksis[i].TotalHarga.ToString("N0")</td>
+                    <td>
+                        <a href="/Transaksi/Detail/@Model.Transaksis[i].Id" class="btn btn-info btn-sm">🔍 Detail</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="3"><strong>Total Pendapatan</strong></td>
+                <td colspan="2"><strong>Rp @Model.TotalPendapatan.ToString("N0")</strong></td>
+            </tr>
+        </tfoot>
+    </table>
+</div>

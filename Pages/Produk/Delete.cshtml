@@ -1,0 +1,16 @@
+@page "{id:int}"
+@model KasirSembako.Pages.Produk.DeleteModel
+@{
+    ViewData["Title"] = "Hapus Produk";
+}
+
+<h2>Hapus Produk</h2>
+<div class="alert alert-danger">
+    Apakah kamu yakin ingin menghapus produk <strong>@Model.Produk.Nama</strong>?
+</div>
+
+<form method="post">
+    <input type="hidden" asp-for="Produk.Id" />
+    <button type="submit" class="btn btn-danger">Ya, Hapus</button>
+    <a href="/Produk" class="btn btn-secondary">Batal</a>
+</form>

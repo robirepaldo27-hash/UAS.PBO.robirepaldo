@@ -1,0 +1,55 @@
+@page "{id:int}"
+@model KasirSembako.Pages.Transaksi.DetailModel
+@{
+    ViewData["Title"] = "Detail Transaksi";
+}
+
+<h2>Detail Transaksi #@Model.Transaksi.Id</h2>
+
+<div class="row mb-3">
+    <div class="col-md-6">
+        <p><strong>Tanggal:</strong> @Model.Transaksi.Tanggal.ToString("dd/MM/yyyy HH:mm")</p>
+        <p><strong>Pelanggan:</strong> @Model.Transaksi.NamaPelanggan</p>
+    </div>
+</div>
+
+<table class="table table-bordered">
+    <thead class="table-dark">
+        <tr>
+            <th>No</th>
+            <th>Produk</th>
+            <th>Harga Satuan</th>
+            <th>Jumlah</th>
+            <th>Subtotal</th>
+        </tr>
+    </thead>
+    <tbody>
+        @for (int i = 0; i < Model.Transaksi.Details.Count; i++)
+        {
+            <tr>
+                <td>@(i + 1)</td>
+                <td>@Model.Transaksi.Details[i].Produk?.Nama</td>
+                <td>Rp @Model.Transaksi.Details[i].HargaSatuan.ToString("N0")</td>
+                <td>@Model.Transaksi.Details[i].Jumlah</td>
+                <td>Rp @Model.Transaksi.Details[i].Subtotal.ToString("N0")</td>
+            </tr>
+        }
+    </tbody>
+    <tfoot>
+        <tr>
+            <td colspan="4" class="text-end"><strong>Total</strong></td>
+            <td><strong>Rp @Model.Transaksi.TotalHarga.ToString("N0")</strong></td>
+        </tr>
+        <tr>
+            <td colspan="4" class="text-end">Bayar</td>
+            <td>Rp @Model.Transaksi.Bayar.ToString("N0")</td>
+        </tr>
+        <tr>
+            <td colspan="4" class="text-end">Kembalian</td>
+            <td>Rp @Model.Transaksi.Kembalian.ToString("N0")</td>
+        </tr>
+    </tfoot>
+</table>
+
+<a href="/Transaksi/Print/@Model.Transaksi.Id" class="btn btn-secondary" target="_blank">🖨️ Print</a>
+<a href="/Transaksi" class="btn btn-primary">Kembali</a>

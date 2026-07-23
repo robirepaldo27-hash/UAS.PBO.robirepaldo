@@ -1,0 +1,43 @@
+@page
+@model KasirSembako.Pages.Transaksi.IndexModel
+@{
+    ViewData["Title"] = "Data Transaksi";
+}
+
+<div class="page-header">
+    <h2>🛒 Data Transaksi</h2>
+    <a href="/Transaksi/Create" class="btn btn-primary">+ Transaksi Baru</a>
+</div>
+
+<div class="table-wrapper">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>Tanggal</th>
+                <th>Pelanggan</th>
+                <th>Total</th>
+                <th>Bayar</th>
+                <th>Kembalian</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < Model.Transaksis.Count; i++)
+            {
+                <tr>
+                    <td>@(i + 1)</td>
+                    <td>@Model.Transaksis[i].Tanggal.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td><strong>@Model.Transaksis[i].NamaPelanggan</strong></td>
+                    <td>Rp @Model.Transaksis[i].TotalHarga.ToString("N0")</td>
+                    <td>Rp @Model.Transaksis[i].Bayar.ToString("N0")</td>
+                    <td>Rp @Model.Transaksis[i].Kembalian.ToString("N0")</td>
+                    <td>
+                        <a href="/Transaksi/Detail/@Model.Transaksis[i].Id" class="btn btn-info btn-sm">🔍 Detail</a>
+                        <a href="/Transaksi/Print/@Model.Transaksis[i].Id" class="btn btn-secondary btn-sm" target="_blank">🖨️ Print</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

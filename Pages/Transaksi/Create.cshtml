@@ -1,0 +1,147 @@
+@page
+@model KasirSembako.Pages.Transaksi.CreateModel
+@{
+    ViewData["Title"] = "Transaksi Baru";
+}
+
+<h2>Transaksi Baru</h2>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="mb-3">
+            <label>Nama Pelanggan</label>
+            <input id="namaPelanggan" class="form-control" placeholder="Nama pelanggan (opsional)" />
+        </div>
+
+        <h5>Pilih Produk</h5>
+        <table class="table table-bordered">
+            <thead class="table-dark">
+                <tr>
+                    <th>Produk</th>
+                    <th>Harga</th>
+                    <th>Jumlah</th>
+                    <th>Subtotal</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody id="itemTable">
+                <tr id="emptyRow">
+                    <td colspan="5" class="text-center text-muted">Belum ada produk dipilih</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="mb-3">
+            <select id="pilihProduk" class="form-select">
+                <option value="">-- Pilih Produk --</option>
+                @foreach (var p in Model.Produks)
+                {
+                    <option value="@p.Id" data-harga="@p.HargaJual" data-nama="@p.Nama" data-stok="@p.Stok">
+                        @p.Nama - Rp @p.HargaJual.ToString("N0") (Stok: @p.Stok)
+                    </option>
+                }
+            </select>
+            <button type="button" class="btn btn-success mt-2" onclick="tambahProduk()">+ Tambah</button>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card p-3">
+            <h5>Ringkasan</h5>
+            <hr/>
+            <p>Total: <strong>Rp <span id="totalHarga">0</span></strong></p>
+            <div class="mb-3">
+                <label>Bayar (Rp)</label>
+                <input type="number" id="bayar" class="form-control" oninput="hitungKembalian()" />
+            </div>
+            <p>Kembalian: <strong>Rp <span id="kembalian">0</span></strong></p>
+            <button class="btn btn-primary w-100" onclick="simpanTransaksi()">Simpan Transaksi</button>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    let items = [];
+    let total = 0;
+
+    function tambahProduk() {
+        const select = document.getElementById('pilihProduk');
+        const id = select.value;
+        const nama = select.options[select.selectedIndex].dataset.nama;
+        const harga = parseFloat(select.options[select.selectedIndex].dataset.harga);
+        const stok = parseInt(select.options[select.selectedIndex].dataset.stok);
+
+        if (!id) return alert('Pilih produk terlebih dahulu!');
+
+        const existing = items.find(i => i.id == id);
+        if (existing) {
+            if (existing.jumlah >= stok) return alert('Stok tidak mencukupi!');
+            existing.jumlah++;
+            existing.subtotal = existing.jumlah * existing.harga;
+        } else {
+            items.push({ id, nama, harga, jumlah: 1, subtotal: harga, stok });
+        }
+        renderTable();
+    }
+
+    function hapusItem(id) {
+        items = items.filter(i => i.id != id);
+        renderTable();
+    }
+
+    function renderTable() {
+        const tbody = document.getElementById('itemTable');
+        if (items.length === 0) {
+            tbody.innerHTML = '<tr id="emptyRow"><td colspan="5" class="text-center text-muted">Belum ada produk dipilih</td></tr>';
+            total = 0;
+        } else {
+            total = items.reduce((sum, i) => sum + i.subtotal, 0);
+            tbody.innerHTML = items.map(i => `
+                <tr>
+                    <td>${i.nama}</td>
+                    <td>Rp ${i.harga.toLocaleString('id-ID')}</td>
+                    <td>${i.jumlah}</td>
+                    <td>Rp ${i.subtotal.toLocaleString('id-ID')}</td>
+                    <td><button class="btn btn-danger btn-sm" onclick="hapusItem('${i.id}')">X</button></td>
+                </tr>
+            `).join('');
+        }
+        document.getElementById('totalHarga').textContent = total.toLocaleString('id-ID');
+        hitungKembalian();
+    }
+
+    function hitungKembalian() {
+        const bayar = parseFloat(document.getElementById('bayar').value) || 0;
+        const kembalian = bayar - total;
+        document.getElementById('kembalian').textContent = kembalian >= 0 ? kembalian.toLocaleString('id-ID') : '0';
+    }
+
+    async function simpanTransaksi() {
+        if (items.length === 0) return alert('Tambahkan produk terlebih dahulu!');
+        const bayar = parseFloat(document.getElementById('bayar').value) || 0;
+        if (bayar < total) return alert('Uang bayar kurang!');
+
+        const data = {
+            namaPelanggan: document.getElementById('namaPelanggan').value || 'Umum',
+            totalHarga: total,
+            bayar: bayar,
+            kembalian: bayar - total,
+            details: items.map(i => ({ produkId: parseInt(i.id), jumlah: i.jumlah, hargaSatuan: i.harga, subtotal: i.subtotal }))
+        };
+
+        const res = await fetch('/api/transaksi', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+
+        if (res.ok) {
+            const result = await res.json();
+            window.location.href = '/Transaksi/Print/' + result.id;
+        } else {
+            alert('Gagal menyimpan transaksi!');
+        }
+    }
+</script>
+}
